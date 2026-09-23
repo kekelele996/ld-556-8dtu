@@ -8,7 +8,7 @@ LegacyTree 是一个纯前端的数字遗产与家谱管理平台，用于构建
 - 成员详情：展示头像、性别、生卒年份、出生地、简介、故事时间线、照片画廊、亲属关系和遗产规划。
 - 家族故事：按回忆、成就、趣事、家训分类筛选，可在卡片和时间线视图之间切换。
 - 老照片馆：照片墙、年份时间轴、Canvas 基础修复滤镜、修复前后状态展示。
-- 遗产规划：按遗嘱意向、数字资产、纪念品、信件创建规划，支持草稿、定稿、归档状态流转。
+- 遗产规划：按遗嘱意向、数字资产、纪念品、信件创建规划，支持草稿、定稿、已交接、归档状态流转；定稿后受益人逐一回执确认，全部确认后进入已交接，内容修改会使旧回执作废并重新等待确认。
 - 设置：加密密码、JSON 导出、加密导出、GEDCOM 导入、深浅主题切换。
 
 ## 快速启动
@@ -59,7 +59,16 @@ src/
 | Gender | `src/types/family.d.ts` FamilyMember 类型；`src/constants/default-templates.ts` 示例成员；`src/pages/FamilyTree.vue` 成员表单；`src/pages/MemberDetail.vue` 成员详情；`src/utils/gedcom-parser.ts` GEDCOM 性别转换 |
 | StoryCategory | `src/types/story.d.ts` Story 类型；`src/constants/default-templates.ts` 示例故事；`src/stores/storyStore.ts` 分类筛选状态；`src/pages/Stories.vue` 筛选标签、故事卡片、撰写表单 |
 | LegacyType | `src/types/legacy.d.ts` LegacyPlan 类型；`src/constants/default-templates.ts` 示例规划；`src/pages/Legacy.vue` 规划列表图标标签、创建表单类型选择；`src/pages/MemberDetail.vue` 规划类型展示 |
+| LegacyStatus | `src/types/legacy.d.ts` LegacyPlan 状态类型；`src/constants/default-templates.ts` 示例规划；`src/stores/legacyStore.ts` 状态流转与回执确认；`src/pages/Legacy.vue` 状态标签、定稿/归档操作；`src/pages/MemberDetail.vue` 本人与受益人视图的状态展示 |
 | MemberStatus | `src/types/family.d.ts` FamilyTreeNode 类型；`src/utils/member-status.ts` 状态推导；`src/stores/familyStore.ts` 树节点状态生成；`src/components/tree/TreeNode.vue` 节点样式；`src/pages/FamilyTree.vue` 成员详情标记 |
+
+## 遗产交接与回执说明
+
+- 规划定稿（`finalized`）后进入回执等待：每位受益人在自己的成员详情页点击"确认收到"，回执按规划内容版本号记录。
+- 全部受益人确认当前版本后，规划自动进入已交接（`delivered`）；未确认的受益人始终列在规划列表和本人详情页的待确认名单中。
+- 修改规划内容会使版本号递增，旧版本回执作废（保留历史记录但不计入当前版本），已交接的规划退回已定稿重新等待确认；同一受益人对同一版本重复确认只记录一次。
+- 成员详情页分两个区块：本人名下规划展示回执进度与待确认名单，作为受益人的规划提供"确认收到"操作和确认时间。
+- 旧版本数据兼容：历史规划缺少版本与回执字段时，水合时自动补默认值（版本 1、空回执），原状态保持不变。
 
 ## 数据加密说明
 

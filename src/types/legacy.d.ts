@@ -1,6 +1,12 @@
-import type { LegacyType } from '@/constants/enums'
+import type { LegacyStatus, LegacyType } from '@/constants/enums'
 
-export type LegacyStatus = 'draft' | 'finalized' | 'archived'
+export type { LegacyStatus }
+
+export interface LegacyReceipt {
+  beneficiaryId: string
+  version: number
+  confirmedAt: string
+}
 
 export interface LegacyPlan {
   id: string
@@ -9,5 +15,7 @@ export interface LegacyPlan {
   content: string
   beneficiaries: string[]
   status: LegacyStatus
+  version: number
+  receipts: LegacyReceipt[]
   createdAt: string
 }

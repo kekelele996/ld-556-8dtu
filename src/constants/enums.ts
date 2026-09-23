@@ -32,6 +32,15 @@ export const MemberStatus = {
 
 export type MemberStatus = (typeof MemberStatus)[keyof typeof MemberStatus]
 
+export const LegacyStatus = {
+  DRAFT: 'draft',
+  FINALIZED: 'finalized',
+  DELIVERED: 'delivered',
+  ARCHIVED: 'archived'
+} as const
+
+export type LegacyStatus = (typeof LegacyStatus)[keyof typeof LegacyStatus]
+
 export const genderLabels: Record<Gender, string> = {
   [Gender.MALE]: '男',
   [Gender.FEMALE]: '女',
@@ -56,4 +65,11 @@ export const memberStatusLabels: Record<MemberStatus, string> = {
   [MemberStatus.LIVING]: '在世',
   [MemberStatus.DECEASED]: '已故',
   [MemberStatus.UNKNOWN]: '未知'
+}
+
+export const legacyStatusLabels: Record<LegacyStatus, string> = {
+  [LegacyStatus.DRAFT]: '草稿',
+  [LegacyStatus.FINALIZED]: '已定稿',
+  [LegacyStatus.DELIVERED]: '已交接',
+  [LegacyStatus.ARCHIVED]: '已归档'
 }

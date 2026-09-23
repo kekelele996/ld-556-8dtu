@@ -1,4 +1,4 @@
-import { Gender, LegacyType, StoryCategory } from './enums'
+import { Gender, LegacyStatus, LegacyType, StoryCategory } from './enums'
 import type { FamilyMember } from '@/types/family'
 import type { LegacyPlan } from '@/types/legacy'
 import type { Photo } from '@/types/photo'
@@ -136,7 +136,9 @@ export const defaultLegacyPlans: LegacyPlan[] = [
     type: LegacyType.DIGITAL_ASSET,
     content: '整理云盘、邮箱、域名账号和照片备份位置，定期更新交接清单。',
     beneficiaries: ['m-child'],
-    status: 'draft',
+    status: LegacyStatus.DRAFT,
+    version: 1,
+    receipts: [],
     createdAt: new Date().toISOString()
   }
 ]

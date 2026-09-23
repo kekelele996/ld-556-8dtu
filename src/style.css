@@ -316,6 +316,20 @@ a {
   text-align: center;
 }
 
+.plan-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.receipt-hint {
+  margin: 4px 0 0;
+  color: #6e776f;
+  font-size: 13px;
+}
+
 .empty-illustration {
   width: 90px;
   height: 90px;
