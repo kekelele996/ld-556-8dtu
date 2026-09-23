@@ -8,7 +8,7 @@ LegacyTree 是一个纯前端的数字遗产与家谱管理平台，用于构建
 - 成员详情：展示头像、性别、生卒年份、出生地、简介、故事时间线、照片画廊、亲属关系和遗产规划。
 - 家族故事：按回忆、成就、趣事、家训分类筛选，可在卡片和时间线视图之间切换。
 - 老照片馆：照片墙、年份时间轴、Canvas 基础修复滤镜、修复前后状态展示。
-- 遗产规划：按遗嘱意向、数字资产、纪念品、信件创建规划，支持草稿、定稿、归档状态流转。
+- 遗产规划：按遗嘱意向、数字资产、纪念品、信件创建规划，状态在草稿 → 待回执 → 已交接（另可归档）之间流转；定稿后每位受益人分别确认收到，全部确认自动交接，规划改版后历史回执作废并重新等待确认。
 - 设置：加密密码、JSON 导出、加密导出、GEDCOM 导入、深浅主题切换。
 
 ## 快速启动
@@ -42,6 +42,7 @@ src/
 ├── constants/     # enums.ts, default-templates.ts
 ├── components/common/  # MemberAvatar, TimelineView, MediaGallery, EmptyState, ConfirmDialog, MessageBridge
 ├── components/tree/    # FamilyTreeView, TreeNode, TreeControls
+├── components/legacy/  # LegacyReceiptPanel, LegacyPlanEditor
 ├── hooks/         # useFamily(), useStory(), usePhoto(), useEncryption()
 ├── pages/         # FamilyTree, MemberDetail, Stories, Photos, Legacy, Settings
 ├── router/        # index.ts, routes.ts, guards.ts
@@ -58,8 +59,20 @@ src/
 |---|---|
 | Gender | `src/types/family.d.ts` FamilyMember 类型；`src/constants/default-templates.ts` 示例成员；`src/pages/FamilyTree.vue` 成员表单；`src/pages/MemberDetail.vue` 成员详情；`src/utils/gedcom-parser.ts` GEDCOM 性别转换 |
 | StoryCategory | `src/types/story.d.ts` Story 类型；`src/constants/default-templates.ts` 示例故事；`src/stores/storyStore.ts` 分类筛选状态；`src/pages/Stories.vue` 筛选标签、故事卡片、撰写表单 |
-| LegacyType | `src/types/legacy.d.ts` LegacyPlan 类型；`src/constants/default-templates.ts` 示例规划；`src/pages/Legacy.vue` 规划列表图标标签、创建表单类型选择；`src/pages/MemberDetail.vue` 规划类型展示 |
+| LegacyType | `src/types/legacy.d.ts` LegacyPlan 类型；`src/constants/default-templates.ts` 示例规划；`src/pages/Legacy.vue` 规划列表图标标签、创建表单类型选择；`src/pages/MemberDetail.vue` 规划类型展示；`src/components/legacy/LegacyPlanEditor.vue` 编辑弹窗类型选择 |
+| LegacyStatus（定义于 `src/types/legacy.d.ts`，标签/颜色维护在 `src/constants/enums.ts`） | `src/constants/enums.ts` `legacyStatusLabels`、`legacyStatusTagTypes`；`src/stores/legacyStore.ts` 定稿、逐人回执、改版作废的状态机；`src/pages/Legacy.vue` 状态列与待办区；`src/pages/MemberDetail.vue` 本人/受益人双视角状态；`src/components/legacy/LegacyReceiptPanel.vue` 回执进度 |
 | MemberStatus | `src/types/family.d.ts` FamilyTreeNode 类型；`src/utils/member-status.ts` 状态推导；`src/stores/familyStore.ts` 树节点状态生成；`src/components/tree/TreeNode.vue` 节点样式；`src/pages/FamilyTree.vue` 成员详情标记 |
+
+## 遗产交接回执机制
+
+规划状态为 `draft`（草稿）、`finalized`（待回执）、`handed_over`（已交接）、`archived`（已归档），并带有 `version`（版本号）与 `receipts`（回执列表，含受益人、确认版本、确认时间）。
+
+1. 草稿定稿后进入"待回执"，在 `/legacy` 页面顶部"待办"区与表格展开行内列出每位受益人。
+2. 每位受益人分别点击"确认收到"，同一位受益人对同一版本重复确认不会多记一次（回执按 受益人+版本 幂等）。
+3. 全部受益人确认当前版本后，规划自动进入"已交接"，并从待办中移除。
+4. 待回执或已交接的规划，一旦修改规划内容或调整受益人名单，版本号加一，此前所有回执作废、保留留档，规划回到"待回执"重新等待全体确认；仅修改类型/关联成员不作废回执。
+5. 成员详情页区分两个视角："本人订立"展示定稿/编辑操作与每位受益人的回执进度；"本人受益"仅展示本人的确认按钮与本人确认状态。
+6. 历史数据兼容：读取旧版规划时只补齐 `version=1`、空回执等字段，不改变其原有状态（旧的定稿规划会以待回执身份进入待办）。
 
 ## 数据加密说明
 

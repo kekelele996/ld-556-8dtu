@@ -129,14 +129,20 @@ export const defaultPhotos: Photo[] = [
   }
 ]
 
-export const defaultLegacyPlans: LegacyPlan[] = [
-  {
-    id: 'l-1',
-    memberId: 'm-father',
-    type: LegacyType.DIGITAL_ASSET,
-    content: '整理云盘、邮箱、域名账号和照片备份位置，定期更新交接清单。',
-    beneficiaries: ['m-child'],
-    status: 'draft',
-    createdAt: new Date().toISOString()
-  }
-]
+export const defaultLegacyPlans: LegacyPlan[] = (() => {
+  const now = new Date().toISOString()
+  return [
+    {
+      id: 'l-1',
+      memberId: 'm-father',
+      type: LegacyType.DIGITAL_ASSET,
+      content: '整理云盘、邮箱、域名账号和照片备份位置，定期更新交接清单。',
+      beneficiaries: ['m-child'],
+      status: 'draft',
+      version: 1,
+      receipts: [],
+      createdAt: now,
+      updatedAt: now
+    }
+  ]
+})()

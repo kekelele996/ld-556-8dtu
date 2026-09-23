@@ -45,11 +45,27 @@ export const storyCategoryLabels: Record<StoryCategory, string> = {
   [StoryCategory.TRADITION]: '家训'
 }
 
+import type { LegacyStatus } from '@/types/legacy'
+
 export const legacyTypeLabels: Record<LegacyType, string> = {
   [LegacyType.WILL]: '遗嘱意向',
   [LegacyType.DIGITAL_ASSET]: '数字资产',
   [LegacyType.KEEPSAKE]: '纪念品',
   [LegacyType.LETTER]: '信件'
+}
+
+export const legacyStatusLabels: Record<LegacyStatus, string> = {
+  draft: '草稿',
+  finalized: '待回执',
+  handed_over: '已交接',
+  archived: '已归档'
+}
+
+export const legacyStatusTagTypes: Record<LegacyStatus, 'default' | 'warning' | 'success' | 'info'> = {
+  draft: 'default',
+  finalized: 'warning',
+  handed_over: 'success',
+  archived: 'info'
 }
 
 export const memberStatusLabels: Record<MemberStatus, string> = {
